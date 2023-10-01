@@ -1040,31 +1040,26 @@ void render_stretched(Spritesheet* s, uint16_t sx, uint16_t sy, uint16_t sw, uin
     }
 }
 
-/*
-TValue_t dget(TValue_t idx) {
-	assert(idx.tag == NUM);
-	assert(idx.num.f == 0);
-    return TNUM(cartdata[idx.num.i]);
+uint8_t dget(lua_State* L) {
+    int16_t idx = luaL_checkinteger(L, 1); 
+	lua_pushinteger(L, cartdata[idx]);
+	return 1;
 }
 
-TValue_t dset(TValue_t idx, TValue_t value) {
-	assert(idx.tag == NUM);
-	assert(idx.num.f == 0);
-	assert(value.tag == NUM);
-	assert(value.num.f == 0);
-
-    cartdata[idx.num.i] = value.num.i;
-    return T_NULL;
+uint8_t dset(lua_State* L) {
+    int16_t idx = luaL_checkinteger(L, 1); 
+    int16_t value = luaL_checkinteger(L, 2); 
+    cartdata[idx] = value;
+	return 0;
 }
 
-TValue_t pset(TVSlice_t args) {
-    int16_t x = __get_int(args, 0);
-    int16_t y = __get_int(args, 1);
-    int16_t idx = __opt_int(args, 2, drawstate.pen_color);
+uint8_t pset(lua_State* L) {
+    int16_t x = luaL_checkinteger(L, 1);
+    int16_t y = luaL_checkinteger(L, 2);
+    int16_t idx = luaL_optinteger(L, 3, drawstate.pen_color);
     _pset(x, y, idx);
-    return T_NULL;
+	return 0;
 }
-*/
 
 void _pset(int16_t x, int16_t y, int16_t idx) {
     drawstate.pen_color = idx;
@@ -1123,14 +1118,14 @@ uint8_t _lua_btnp(lua_State* L) {
 	}
 }
 
-/*
-TValue_t sget(TValue_t x, TValue_t y) {
-	assert(x.tag == NUM);
-	assert(y.tag == NUM);
-
-    return TNUM(_sget(x.num.i, y.num.i));
+uint8_t _lua_sget(lua_State* L) {
+	int16_t x = luaL_checkinteger(L, 1);
+	int16_t y = luaL_checkinteger(L, 2);
+	lua_pushinteger(L, _sget(x, y));
+    return 1;
 }
 
+/*
 TValue_t _time() {
 	uint32_t _now_with_ms = now();
 	uint32_t _delta_sec = (_now_with_ms - bootup_time) / 1000;
@@ -1140,10 +1135,11 @@ TValue_t _time() {
 	fix32_t _now = fix32_from_parts(_delta_sec & 0x8fff, (uint16_t)_delta_ms);
     return TNUM(_now);
 }
+*/
 
-TValue_t camera(TVSlice_t args) {
-    int16_t x = __opt_int(args, 0, 0);
-    int16_t y = __opt_int(args, 1, 0);
+uint8_t _lua_camera(lua_State* L) {
+    int16_t x = luaL_optinteger(L, 1, 0);
+    int16_t y = luaL_optinteger(L, 2, 0);
     //int16_t old_x = drawstate.camera_x;
     //int16_t old_y = drawstate.camera_y;
 
@@ -1151,9 +1147,8 @@ TValue_t camera(TVSlice_t args) {
     drawstate.camera_y = y;
 
 	// it's going to suck when i need to figure out how to implement tuples
-    return T_NULL;
+    return 0;
 }
-*/
 
 uint8_t _lua_pal(lua_State* L) {
     // TODO: significant functionality missing
@@ -1227,6 +1222,8 @@ void registerLuaFunctions(lua_State* L) {
     lua_setglobal(L, "palt");
     lua_pushcfunction(L, _lua_pal);
     lua_setglobal(L, "pal");
+    lua_pushcfunction(L, _lua_sget);
+    lua_setglobal(L, "sget");
 	/*
     lua_pushcfunction(L, _lua_print);
     lua_setglobal(L, "print");
@@ -1246,8 +1243,6 @@ void registerLuaFunctions(lua_State* L) {
     lua_setglobal(L, "ovalfill");
     lua_pushcfunction(L, _lua_pset);
     lua_setglobal(L, "pset");
-    lua_pushcfunction(L, _lua_sget);
-    lua_setglobal(L, "sget");
     lua_pushcfunction(L, _lua_time);
     lua_setglobal(L, "t");
     lua_pushcfunction(L, _lua_time);
