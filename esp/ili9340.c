@@ -106,6 +106,24 @@ void spi_master_init(TFT_t * dev, gpio_num_t GPIO_MOSI, gpio_num_t GPIO_SCLK, gp
 }
 
 
+// bool spi_master_write_byte(spi_device_handle_t SPIHandle, const uint8_t* Data, size_t DataLength)
+// {
+// 	spi_transaction_t SPITransaction;
+// 	esp_err_t ret;
+
+//     memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
+//     SPITransaction.length = DataLength * 8;
+//     SPITransaction.tx_buffer = Data;
+// #if 0
+//     ret = spi_device_transmit( SPIHandle, &SPITransaction );
+// #else
+//     ret = spi_device_polling_transmit( SPIHandle, &SPITransaction );
+// #endif
+//     assert(ret==ESP_OK); 
+
+// 	return true;
+// }
+
 bool spi_master_write_byte(spi_device_handle_t SPIHandle, const uint8_t* Data, size_t DataLength)
 {
 	spi_transaction_t SPITransaction;
@@ -114,11 +132,9 @@ bool spi_master_write_byte(spi_device_handle_t SPIHandle, const uint8_t* Data, s
     memset( &SPITransaction, 0, sizeof( spi_transaction_t ) );
     SPITransaction.length = DataLength * 8;
     SPITransaction.tx_buffer = Data;
-#if 0
+    // 注释掉 polling，改用普通 transmit
+    //ret = spi_device_polling_transmit( SPIHandle, &SPITransaction );
     ret = spi_device_transmit( SPIHandle, &SPITransaction );
-#else
-    ret = spi_device_polling_transmit( SPIHandle, &SPITransaction );
-#endif
     assert(ret==ESP_OK); 
 
 	return true;

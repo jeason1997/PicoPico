@@ -115,14 +115,22 @@ void draw_hud() {
 }
 
 bool init_video() {
-    spi_master_init(&dev, (gpio_num_t)CONFIG_MOSI_GPIO, (gpio_num_t)CONFIG_SCLK_GPIO, (gpio_num_t)CONFIG_CS_GPIO, (gpio_num_t)CONFIG_DC_GPIO, (gpio_num_t)CONFIG_RESET_GPIO, (gpio_num_t)CONFIG_BL_GPIO);
+    // spi_master_init(&dev, (gpio_num_t)CONFIG_MOSI_GPIO, (gpio_num_t)CONFIG_SCLK_GPIO, (gpio_num_t)CONFIG_CS_GPIO, (gpio_num_t)CONFIG_DC_GPIO, (gpio_num_t)CONFIG_RESET_GPIO, (gpio_num_t)CONFIG_BL_GPIO);
+    spi_master_init(&dev, GPIO_NUM_23, GPIO_NUM_18, GPIO_NUM_5, GPIO_NUM_4, GPIO_NUM_19, GPIO_NUM_NC);
     lcdInit(&dev, 0x7735, CONFIG_WIDTH, CONFIG_HEIGHT, 0, 0);
 
     gpio_config_t c = {
-        .pin_bit_mask = (1ULL << CONFIG_GPIO_LEFT) | (1ULL << CONFIG_GPIO_RIGHT) | (1ULL << CONFIG_GPIO_A) | (1ULL << CONFIG_GPIO_B) | (1ULL << CONFIG_GPIO_UP),
+        .pin_bit_mask = (1ULL << CONFIG_GPIO_LEFT) 
+                    | (1ULL << CONFIG_GPIO_RIGHT) 
+                    | (1ULL << CONFIG_GPIO_A) 
+                    | (1ULL << CONFIG_GPIO_B) 
+                    | (1ULL << CONFIG_GPIO_UP)
+                    | (1ULL << CONFIG_GPIO_DOWN),
         .mode = GPIO_MODE_INPUT,
-        .pull_up_en = GPIO_PULLUP_DISABLE,
-        .pull_down_en = GPIO_PULLDOWN_ENABLE,
+        // .pull_up_en = GPIO_PULLUP_DISABLE,
+        .pull_up_en = GPIO_PULLUP_ENABLE,    // 开启上拉
+        // .pull_down_en = GPIO_PULLDOWN_ENABLE,
+        .pull_down_en = GPIO_PULLDOWN_DISABLE,
         .intr_type = GPIO_INTR_DISABLE,
     };
     gpio_config(&c);
@@ -132,6 +140,7 @@ bool init_video() {
 
 bool handle_input() {
     int up = gpio_get_level((gpio_num_t)CONFIG_GPIO_UP);
+    int down = gpio_get_level((gpio_num_t)CONFIG_GPIO_DOWN);
     int left = gpio_get_level((gpio_num_t)CONFIG_GPIO_LEFT);
     int right = gpio_get_level((gpio_num_t)CONFIG_GPIO_RIGHT);
     int a = gpio_get_level((gpio_num_t)CONFIG_GPIO_A);
@@ -145,17 +154,24 @@ bool handle_input() {
     buttons_prev[4] = buttons[4];
     buttons_prev[5] = buttons[5];
 
-    buttons[BTN_IDX_LEFT] = left == 1;
-    buttons[BTN_IDX_RIGHT] = right == 1;
-    buttons[BTN_IDX_UP] = up == 1;
-    buttons[BTN_IDX_DOWN] = 0; // FIXME no down connected
-    buttons[BTN_IDX_A] = a == 1;
-    buttons[BTN_IDX_B] = b == 1;
+    // buttons[BTN_IDX_LEFT] = left == 1;
+    // buttons[BTN_IDX_RIGHT] = right == 1;
+    // buttons[BTN_IDX_UP] = up == 1;
+    // buttons[BTN_IDX_DOWN] = 0; // FIXME no down connected
+    // buttons[BTN_IDX_A] = a == 1;
+    // buttons[BTN_IDX_B] = b == 1;
+    buttons[BTN_IDX_LEFT] = left == 0;
+    buttons[BTN_IDX_RIGHT] = right == 0;
+    buttons[BTN_IDX_UP] = up == 0;
+    buttons[BTN_IDX_DOWN] = down == 0;
+    buttons[BTN_IDX_A] = a == 0;
+    buttons[BTN_IDX_B] = b == 0;
 
     buttons_frame[0] = (buttons[0] == 1) && (buttons_prev[0] == 0);
     buttons_frame[1] = (buttons[1] == 1) && (buttons_prev[1] == 0);
     buttons_frame[2] = (buttons[2] == 1) && (buttons_prev[2] == 0);
-    buttons_frame[3] = (0)               && (buttons_prev[3] == 0); // FIXME no down connected
+    // buttons_frame[3] = (0)               && (buttons_prev[3] == 0); // FIXME no down connected
+    buttons_frame[3] = (buttons[3] == 1) && (buttons_prev[3] == 0);
     buttons_frame[4] = (buttons[4] == 1) && (buttons_prev[4] == 0);
     buttons_frame[5] = (buttons[5] == 1) && (buttons_prev[5] == 0);
 

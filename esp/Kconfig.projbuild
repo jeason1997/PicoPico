@@ -18,37 +18,37 @@ menu "PicoPico Configuration"
 		config GPIO_LEFT
 			int "GPIO number for controller LEFT"
 			range 0 40
-			default 4
+			default 27
 			help
 				GPIO number (IOxx) to LEFT.
 		config GPIO_RIGHT
 			int "GPIO number for controller RIGHT"
 			range 0 40
-			default 15
+			default 35
 			help
 				GPIO number (IOxx) to RIGHT.
 		config GPIO_UP
 			int "GPIO number for controller UP"
 			range 0 40
-			default 0
+			default 2
 			help
 				GPIO number (IOxx) to UP.
 		config GPIO_DOWN
 			int "GPIO number for controller DOWN"
 			range 0 40
-			default 2
+			default 13
 			help
 				GPIO number (IOxx) to DOWN.
 		config GPIO_A
 			int "GPIO number for controller A"
 			range 0 40
-			default 14
+			default 34
 			help
 				GPIO number (IOxx) to A.
 		config GPIO_B
 			int "GPIO number for controller B"
 			range 0 40
-			default 13
+			default 12
 			help
 				GPIO number (IOxx) to B.
 		config GPIO_SELECT

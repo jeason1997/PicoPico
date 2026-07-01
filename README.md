@@ -1,3 +1,57 @@
+# PicoPico ESP32 编译部署说明
+## 一、环境安装（CodeSpaces 在线环境）
+### 1. 打开项目
+在 GitHub CodeSpaces 中加载本仓库项目
+
+### 2. 拉取指定版本 ESP-IDF
+本项目**强制推荐 ESP-IDF v4.4**，使用 v5.x 系列会出现大量编译兼容报错，执行命令拉取源码：
+```bash
+cd /opt/
+git clone --recursive -b v4.4 https://github.com/espressif/esp-idf.git
+cd esp-idf
+```
+
+### 3. Python 版本适配（关键避坑）
+ESP-IDF v4.4 仅兼容 Python3.8，CodeSpaces 默认 Python3.12 会触发依赖版本冲突，建议使用 `pyenv` 切换至 Python3.8 环境。
+
+### 4. 初始化 ESP-IDF 工具链
+```bash
+# 安装编译依赖工具
+./install.sh
+# 加载环境变量（首段小数点不可省略，等效 source ./export.sh）
+. ./export.sh
+```
+
+---
+
+## 二、项目编译
+```bash
+# 进入项目根目录
+cd /workspaces/PicoPico
+# 创建独立编译输出目录
+mkdir esp32_pico && cd esp32_pico
+# CMake 配置，指定 ESP32 后端
+cmake -DBACKEND=ESP32 ..
+# 并行编译，8线程加速
+make -j8
+# 合并分区、引导、主程序为完整固件 bin
+esptool.py --chip esp32 merge_bin -o full_firmware.bin \
+0x1000 bootloader/bootloader.bin \
+0x8000 partition_table/partition-table.bin \
+0x10000 my_project.bin
+```
+
+---
+
+## 三、固件烧录（本地 Windows 示例）
+将合并后的完整固件烧录至 ESP32 硬件，修改串口 `COM3` 为设备实际端口号：
+```bash
+esptool -p COM3 -b 921600 write_flash -z 0x0 full_firmware.bin
+```
+
+---
+
+
 # Pico Pico
 
 Project to attempt to create hardware for the [Pico-8](https://www.lexaloffle.com/pico-8.php).
