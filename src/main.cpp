@@ -43,7 +43,7 @@ int16_t drawMenu() {
                 memset(&label.sprite_data, 0x1f, sizeof(label.sprite_data));
             }
             gfx_cls(original_palette[0]);
-            drawHud();
+            // drawHud();
             //render_stretched(&label, 0, 0, 128, 128, 32, 0, 64, 64);
             render_stretched(&label, 0, 0, 127, 127, 16, 0, 96, 96);
             //_render(&label, 0, 0, 0, 0, -1, false, false, 128, 128);
@@ -174,8 +174,8 @@ int pico8() {
         // printf("Frame: %03d [U: %d, D: %03d], Remaining: %d\n", frame_end_time - frame_start_time, update_end_time - update_start_time, draw_end_time - draw_start_time, delta);
         frame_count++;
         if ((frame_count % 150) == 0) { // ~5s
-            drawHud();
-            draw_hud();
+            // drawHud();
+            // draw_hud();
         }
 	flip();
     }

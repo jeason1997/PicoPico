@@ -10,7 +10,7 @@ menu "PicoPico Configuration"
 	config HEIGHT
 		int "SCREEN HEIGHT"
 		range 0 999
-		default 128
+		default 160
 		help
 			The height resolution of the screen.
 

@@ -108,11 +108,11 @@ bool init_audio() {
     return true;
 }
 
-void draw_hud() {
-    set_window_hud(&dev, SCREEN_WIDTH, HUD_HEIGHT);
-    send_buffer(&dev, hud_buffer, sizeof(hud_buffer));
-    set_window(&dev);
-}
+// void draw_hud() {
+//     set_window_hud(&dev, SCREEN_WIDTH, HUD_HEIGHT);
+//     send_buffer(&dev, hud_buffer, sizeof(hud_buffer));
+//     set_window(&dev);
+// }
 
 bool init_video() {
     // spi_master_init(&dev, (gpio_num_t)CONFIG_MOSI_GPIO, (gpio_num_t)CONFIG_SCLK_GPIO, (gpio_num_t)CONFIG_CS_GPIO, (gpio_num_t)CONFIG_DC_GPIO, (gpio_num_t)CONFIG_RESET_GPIO, (gpio_num_t)CONFIG_BL_GPIO);

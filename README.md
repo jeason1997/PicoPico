@@ -12,7 +12,12 @@ cd esp-idf
 ```
 
 ### 3. Python 版本适配（关键避坑）
-ESP-IDF v4.4 仅兼容 Python3.8，CodeSpaces 默认 Python3.12 会触发依赖版本冲突，建议使用 `pyenv` 切换至 Python3.8 环境。
+ESP-IDF v4.4 仅兼容 Python3.8，CodeSpaces 默认 Python3.12 会触发依赖版本冲突，建议使用 `pyenv` 切换至 Python3.8 环境。参考：https://www.cnblogs.com/jeason1997/p/19129825
+
+新的CodeSpaces(2025.10.8)缺乏libusb相关的，会无法install，需要先安装下
+```bash
+sudo apt install -y libusb-1.0-0 libusb-1.0-0-dev
+```
 
 ### 4. 初始化 ESP-IDF 工具链
 ```bash
@@ -49,6 +54,44 @@ esptool.py --chip esp32 merge_bin -o full_firmware.bin \
 esptool -p COM3 -b 921600 write_flash -z 0x0 full_firmware.bin
 ```
 
+
+## 四、切换为ESP32S3（可以编译成功，但未烧录验证）
+### 1.根目录下的CMakeLists.txt里头部修改，强制设置目标为ESP32S3
+cmake_minimum_required(VERSION 3.13)
+```bash
+# 只要是 ESP-IDF 编译环境，强制锁定 ESP32-S3
+if(DEFINED ENV{IDF_PATH})
+    set(BACKEND "ESP32")
+    set(IDF_TARGET "esp32s3")
+    # 同步给环境变量，让 idf.py 识别
+    set(ENV{IDF_TARGET} ${IDF_TARGET})
+endif()
+
+# 原有后端校验
+if(NOT DEFINED BACKEND)
+	message(FATAL_ERROR "You must define the variable BACKEND (to either PICO, ESP32, PC, RAWDRAW, ANDROID, THREEDS or TEST)" )
+endif()
+```
+
+### 2.设置分区表，默认的分区表程序空间不够大，编译为esp32s3会编译失败
+```bash
+idf.py menuconfig
+Partition Table  --->Partition Table (Single factory app (large), no OTA)
+```
+
+### 3.设置Flash为4M（可选）
+```bash
+idf.py menuconfig
+Serial flasher config  --->Flash size (4 MB)
+```
+
+### 4.因为不同芯片的引脚不同，修改backend.c里的spi引脚定义
+```bash
+bool init_video() {
+    // spi_master_init(&dev, (gpio_num_t)CONFIG_MOSI_GPIO, (gpio_num_t)CONFIG_SCLK_GPIO, (gpio_num_t)CONFIG_CS_GPIO, (gpio_num_t)CONFIG_DC_GPIO, (gpio_num_t)CONFIG_RESET_GPIO, (gpio_num_t)CONFIG_BL_GPIO);
+    // spi_master_init(&dev, GPIO_NUM_23, GPIO_NUM_18, GPIO_NUM_5, GPIO_NUM_4, GPIO_NUM_19, GPIO_NUM_NC);	// esp32
+    spi_master_init(&dev, GPIO_NUM_46, GPIO_NUM_18, GPIO_NUM_5, GPIO_NUM_4, GPIO_NUM_19, GPIO_NUM_NC);		// esp32s3
+```
 ---
 
 

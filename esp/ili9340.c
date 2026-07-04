@@ -297,47 +297,47 @@ void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, in
     // blank entire window
     spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
     spi_master_write_data_word(dev, 0);
-    spi_master_write_data_word(dev, 128);
+    spi_master_write_data_word(dev, width);
 
     spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
     spi_master_write_data_word(dev, 0);
-    spi_master_write_data_word(dev, 160);
+    spi_master_write_data_word(dev, height);
 
 
     // blank screen
-    uint8_t buffer[160*2];
+    uint8_t buffer[height*2];
     memset(buffer, 0x0, sizeof(buffer));
     gpio_set_level(dev->_dc, SPI_Command_Mode);
     spi_master_write_comm_byte(dev, 0x2C);	//	Memory Write
     gpio_set_level(dev->_dc, SPI_Data_Mode);
-    for(uint8_t y=0; y<128; y++) {
+    for(uint8_t y=0; y<width; y++) {
         spi_master_write_byte(dev->_TFT_Handle, buffer, sizeof(buffer));
     }
 
 }
 
-void set_window_hud(TFT_t* dev, uint8_t width, uint8_t height) {
-    spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
-    spi_master_write_data_word(dev, 0);
-    spi_master_write_data_word(dev, width);
+// void set_window_hud(TFT_t* dev, uint8_t width, uint8_t height) {
+//     spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
+//     spi_master_write_data_word(dev, 0);
+//     spi_master_write_data_word(dev, width);
 
-    spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
-    spi_master_write_data_word(dev, 4); // 4 = offset/padding
-    spi_master_write_data_word(dev, 4+height);
-}
+//     spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
+//     spi_master_write_data_word(dev, 4); // 4 = offset/padding
+//     spi_master_write_data_word(dev, 4+height);
+// }
 
-void set_window(TFT_t* dev) {
-    // set regular window
-    spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
-    //spi_master_write_data_word(dev, 16);
-    //spi_master_write_data_word(dev, 16+127);
-    spi_master_write_data_word(dev, 0);
-    spi_master_write_data_word(dev, 127);
+// void set_window(TFT_t* dev, uint8_t width, uint8_t height) {
+//     // set regular window
+//     spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
+//     //spi_master_write_data_word(dev, 16);
+//     //spi_master_write_data_word(dev, 16+127);
+//     spi_master_write_data_word(dev, 0);
+//     spi_master_write_data_word(dev, width - 1);
 
-    spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
-    spi_master_write_data_word(dev, 16);
-    spi_master_write_data_word(dev, 32+127);
-}
+//     spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
+//     spi_master_write_data_word(dev, 16);
+//     spi_master_write_data_word(dev, height - 1);
+// }
 
 // Display ON
 void lcdDisplayOn(TFT_t * dev) {
