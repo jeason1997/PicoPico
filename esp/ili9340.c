@@ -340,38 +340,38 @@ void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, in
 // }
 
 // Display ON
-void lcdDisplayOn(TFT_t * dev) {
-	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
-		spi_master_write_comm_byte(dev, 0x29);
-	} // endif 0x9340/0x9341/0x7735/0x7796
+// void lcdDisplayOn(TFT_t * dev) {
+// 	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
+// 		spi_master_write_comm_byte(dev, 0x29);
+// 	} // endif 0x9340/0x9341/0x7735/0x7796
 
-	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
-		lcdWriteRegisterByte(dev, 0x07, 0x1017);
-	} // endif 0x9225/0x9226
+// 	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+// 		lcdWriteRegisterByte(dev, 0x07, 0x1017);
+// 	} // endif 0x9225/0x9226
 
-}
+// }
 
-// Display Inversion OFF
-void lcdInversionOff(TFT_t * dev) {
-	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
-		spi_master_write_comm_byte(dev, 0x20);
-	} // endif 0x9340/0x9341/0x7735/0x7796
+// // Display Inversion OFF
+// void lcdInversionOff(TFT_t * dev) {
+// 	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
+// 		spi_master_write_comm_byte(dev, 0x20);
+// 	} // endif 0x9340/0x9341/0x7735/0x7796
 
-	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
-		lcdWriteRegisterByte(dev, 0x07, 0x1017);
-	} // endif 0x9225/0x9226
-}
+// 	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+// 		lcdWriteRegisterByte(dev, 0x07, 0x1017);
+// 	} // endif 0x9225/0x9226
+// }
 
-// Display Inversion ON
-void lcdInversionOn(TFT_t * dev) {
-	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
-		spi_master_write_comm_byte(dev, 0x21);
-	} // endif 0x9340/0x9341/0x7735/0x7796
+// // Display Inversion ON
+// void lcdInversionOn(TFT_t * dev) {
+// 	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
+// 		spi_master_write_comm_byte(dev, 0x21);
+// 	} // endif 0x9340/0x9341/0x7735/0x7796
 
-	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
-		lcdWriteRegisterByte(dev, 0x07, 0x1013);
-	} // endif 0x9225/0x9226
-}
+// 	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+// 		lcdWriteRegisterByte(dev, 0x07, 0x1013);
+// 	} // endif 0x9225/0x9226
+// }
 
 // Change Memory Access Control
 // void lcdBGRFilter(TFT_t * dev) {
@@ -388,23 +388,23 @@ void lcdInversionOn(TFT_t * dev) {
 // RGB565 conversion
 // RGB565 is R(5)+G(6)+B(5)=16bit color format.
 // Bit image "RRRRRGGGGGGBBBBB"
-uint16_t rgb565_conv(uint16_t r,uint16_t g,uint16_t b) {
-	return (((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3));
-}
+// uint16_t rgb565_conv(uint16_t r,uint16_t g,uint16_t b) {
+// 	return (((r & 0xF8) << 8) | ((g & 0xFC) << 3) | (b >> 3));
+// }
 
-// Backlight OFF
-void lcdBacklightOff(TFT_t * dev) {
-	if(dev->_bl >= 0) {
-		gpio_set_level((gpio_num_t) dev->_bl, 0 );
-	}
-}
+// // Backlight OFF
+// void lcdBacklightOff(TFT_t * dev) {
+// 	if(dev->_bl >= 0) {
+// 		gpio_set_level((gpio_num_t) dev->_bl, 0 );
+// 	}
+// }
 
-// Backlight ON
-void lcdBacklightOn(TFT_t * dev) {
-	if(dev->_bl >= 0) {
-		gpio_set_level((gpio_num_t) dev->_bl, 1 );
-	}
-}
+// // Backlight ON
+// void lcdBacklightOn(TFT_t * dev) {
+// 	if(dev->_bl >= 0) {
+// 		gpio_set_level((gpio_num_t) dev->_bl, 1 );
+// 	}
+// }
 
 void send_buffer(TFT_t* dev, uint8_t *buffer, uint16_t bufferLen) {
     spi_device_acquire_bus(dev->_TFT_Handle, portMAX_DELAY);

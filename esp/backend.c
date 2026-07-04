@@ -47,18 +47,38 @@ void put_buffer();
 void video_close(){
 }
 
-void gfx_flip() {
-    // memcpy(backbuffer, frontbuffer, sizeof(frontbuffer));
-    // Flip endianness
-    // put_buffer();
+// void gfx_flip() {
+//     // memcpy(backbuffer, frontbuffer, sizeof(frontbuffer));
+//     // Flip endianness
+//     // put_buffer();
 
-    for(uint8_t y=0; y<SCREEN_HEIGHT; y++)
-        for(uint8_t x=0; x<SCREEN_WIDTH; x++) {
+//     for(uint8_t y=0; y<SCREEN_HEIGHT; y++)
+//         for(uint8_t x=0; x<SCREEN_WIDTH; x++) {
+//             palidx_t p = get_pixel(x, y);
+//             color_t c = palette[p];
+//             backbuffer[y*SCREEN_WIDTH*2+x*2  ] = (c >> 8);
+//             backbuffer[y*SCREEN_WIDTH*2+x*2+1] = c & 0xFF;
+//         }
+//     xQueueSendToBack(q, (void*)&FLAG, (TickType_t) 0);
+// }
+#define OFFSET_X 16
+#define DISP_WIDTH 128
+void gfx_flip() {
+    // 1. 先把整个backbuffer全部清黑色（简化逻辑，不用单独填充右侧）
+    memset(backbuffer, 0x00, sizeof(backbuffer));
+    // 2. 渲染游戏画面，整体右移16像素，只循环0~127（128个逻辑像素）
+    for(uint8_t y = 0; y < SCREEN_HEIGHT; y++)
+    {
+        for(uint8_t x = 0; x < DISP_WIDTH; x++)
+        {
             palidx_t p = get_pixel(x, y);
             color_t c = palette[p];
-            backbuffer[y*SCREEN_WIDTH*2+x*2  ] = (c >> 8);
-            backbuffer[y*SCREEN_WIDTH*2+x*2+1] = c & 0xFF;
+            uint16_t real_x = x + OFFSET_X;
+            uint32_t addr = y * SCREEN_WIDTH * 2 + real_x * 2;
+            backbuffer[addr]     = (c >> 8);
+            backbuffer[addr + 1] = c & 0xFF;
         }
+    }
     xQueueSendToBack(q, (void*)&FLAG, (TickType_t) 0);
 }
 
