@@ -221,7 +221,7 @@ void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, in
         // change from 0x08 to 0x00
 
         //spi_master_write_data_byte(dev, 0x00 | 0x40 | 0x20) ; // | 0x40 | 0x20);	//Right top start, BGR color filter panel
-		spi_master_write_data_byte(dev, 0x00) ; // | 0x40 | 0x20);	//Right top start, BGR color filter panel
+		spi_master_write_data_byte(dev, 0x60) ; // | 0x40 | 0x20);	//Right top start, BGR color filter panel
 		//spi_master_write_data_byte(dev, 0x00);//Right top start, RGB color filter panel
         // 0x40 0x20 are rotate 2x?
 
@@ -297,11 +297,11 @@ void lcdInit(TFT_t * dev, uint16_t model, int width, int height, int offsetx, in
     // blank entire window
     spi_master_write_comm_byte(dev, 0x2A);	// set column(x) address
     spi_master_write_data_word(dev, 0);
-    spi_master_write_data_word(dev, width);
+    spi_master_write_data_word(dev, width - 1);
 
     spi_master_write_comm_byte(dev, 0x2B);	// set Page(y) address
     spi_master_write_data_word(dev, 0);
-    spi_master_write_data_word(dev, height);
+    spi_master_write_data_word(dev, height - 1);
 
 
     // blank screen
@@ -374,16 +374,16 @@ void lcdInversionOn(TFT_t * dev) {
 }
 
 // Change Memory Access Control
-void lcdBGRFilter(TFT_t * dev) {
-	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
-		spi_master_write_comm_byte(dev, 0x36);	//Memory Access Control
-		spi_master_write_data_byte(dev, 0x00);	//Right top start, RGB color filter panel
-	} // endif 0x9340/0x9341/0x7735/0x7796
+// void lcdBGRFilter(TFT_t * dev) {
+// 	if (dev->_model == 0x9340 || dev->_model == 0x9341 || dev->_model == 0x7735 || dev->_model == 0x7796) {
+// 		spi_master_write_comm_byte(dev, 0x36);	//Memory Access Control
+// 		spi_master_write_data_byte(dev, 0x00);	//Right top start, RGB color filter panel
+// 	} // endif 0x9340/0x9341/0x7735/0x7796
 
-	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
-		lcdWriteRegisterByte(dev, 0x03, 0x0030); // set GRAM write direction and BGR=0.
-	} // endif 0x9225/0x9226
-}
+// 	if (dev->_model == 0x9225 || dev->_model == 0x9226) {
+// 		lcdWriteRegisterByte(dev, 0x03, 0x0030); // set GRAM write direction and BGR=0.
+// 	} // endif 0x9225/0x9226
+// }
 
 // RGB565 conversion
 // RGB565 is R(5)+G(6)+B(5)=16bit color format.

@@ -23,6 +23,9 @@
 #include <lauxlib.h>
 #include <lualib.h>
 
+#define CONFIG_WIDTH 160
+#define CONFIG_HEIGHT 128
+
 #define SCREEN_HEIGHT CONFIG_HEIGHT
 #define SCREEN_WIDTH CONFIG_WIDTH
 #define HUD_HEIGHT 8

@@ -51,7 +51,7 @@ esptool.py --chip esp32 merge_bin -o full_firmware.bin \
 ## 三、固件烧录（本地 Windows 示例）
 将合并后的完整固件烧录至 ESP32 硬件，修改串口 `COM3` 为设备实际端口号：
 ```bash
-esptool -p COM3 -b 921600 write_flash -z 0x0 full_firmware.bin
+esptool -p COM3 -b 921600 write_flash -z 0x0 esp32_firmware.bin ; Remove-Item esp32_firmware.bin
 ```
 
 

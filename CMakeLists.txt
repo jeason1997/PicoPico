@@ -96,7 +96,24 @@ if(BACKEND STREQUAL "PC")
 
 
 elseif(BACKEND STREQUAL "ESP32")
-	# some day i'll figure out how to merge the 2 projects
+add_definitions(-DESP_BACKEND)
+set(EXTRA_COMPONENT_DIRS "esp")
+set(COMPONENTS "esp")
+include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+
+# 编译完自动合并完整固件，直接调用esptool.py
+add_custom_command(TARGET my_project.elf POST_BUILD
+    COMMAND esptool.py
+        --chip esp32
+        merge_bin
+        -o ${CMAKE_SOURCE_DIR}/esp32_firmware.bin
+        0x1000 bootloader/bootloader.bin
+        0x8000 partition_table/partition-table.bin
+        0x10000 my_project.bin
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    BYPRODUCTS ${CMAKE_SOURCE_DIR}/esp32_firmware.bin
+    COMMENT "Auto merge full flash bin after build"
+)
 
 elseif(BACKEND STREQUAL "THREEDS")
 	set(CMAKE_C_COMPILER "/opt/devkitpro/devkitARM/bin/arm-none-eabi-g++")

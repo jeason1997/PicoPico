@@ -132,8 +132,8 @@ CONFIG_PARTITION_TABLE_MD5=y
 #
 # PicoPico Configuration
 #
-CONFIG_WIDTH=128
-CONFIG_HEIGHT=160
+CONFIG_WIDTH=160
+CONFIG_HEIGHT=128
 
 #
 # Controller configuration
